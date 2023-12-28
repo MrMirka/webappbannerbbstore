@@ -4,17 +4,20 @@ import { logOut, signEmailPass } from '../network/repository'
 export const useStore = create((set) => ({
     autorizationStatus: false,
     token: null,
-    auth: async (email: string, password: string) => {
+    error: false,
+    logIn: async (email: string, password: string) => {
         set(async (state: any) => {
             if (!state.autorizationStatus) {
                 try {
                     const status = await signEmailPass(email, password);
                     if (status) {
+                        set({ error: false })
                         set({ autorizationStatus: true })
                         set({ token: status.uid })
                     }
                 } catch (error) {
                     console.error('Ошибка авторизации:', error);
+                    set({ error: true })
                     throw new Error('Ошибка авторизации');
                 }
                 return;
