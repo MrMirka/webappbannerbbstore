@@ -1,45 +1,46 @@
 import { create } from 'zustand'
 import { logOut, signEmailPass } from '../network/repository'
 
-export const useStore = create((set) => ({
-    autorizationStatus: false,
-    token: null,
-    error: false,
-    logIn: async (email: string, password: string) => {
-        set(async (state: any) => {
-            if (!state.autorizationStatus) {
-                try {
-                    const status = await signEmailPass(email, password);
-                    if (status) {
-                        set({ error: false })
-                        set({ autorizationStatus: true })
-                        set({ token: status.uid })
-                    }
-                } catch (error) {
-                    console.error('Ошибка авторизации:', error);
-                    set({ error: true })
-                    throw new Error('Ошибка авторизации');
-                }
-                return;
-            }
+type State = {
+    autorizationStatus: boolean,
+    token: string,
+    error: boolean
+}
 
-        });
+type Actions = {
+    logIn: (email: string, password: string) => Promise<void>;
+    logOut: () => Promise<void>;
+};
+
+
+
+export const useStore = create<State & Actions>((set) => ({
+    autorizationStatus: false,
+    token: '',
+    error: false,
+
+    logIn: async (email: string, password: string) => {
+        if (!useStore.getState().autorizationStatus) {
+            try {
+                const response = await signEmailPass(email, password);
+                if (response) {
+                    set({ error: false, autorizationStatus: true, token: response.uid });
+                }
+            } catch (error) {
+                console.error('Ошибка авторизации:', error);
+                set({ error: true });
+            }
+        }
     },
     logOut: async () => {
-        set(async (state: any) => {
-            if (state.autorizationStatus) {
-                try {
-                    const status = await logOut();
-                    set({ autorizationStatus: status })
-                    if(!status) set({ token: null })
-                } catch (error) {
-                    console.error('Ошибка выхода:', error);
-                    throw new Error('Ошибка выхода');
-                }
-                return;
+        if (useStore.getState().autorizationStatus) {
+            try {
+                const status = await logOut();
+                set({ autorizationStatus: !status });
+                if (!status) set({ token: '' });
+            } catch (error) {
+                console.error('Ошибка выхода:', error);
             }
-
-        });
+        }
     }
 }));
-
