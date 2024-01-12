@@ -4,6 +4,10 @@ import { Button } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { useState } from "react";
 import { useStore } from "../../service/state/Store";
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import LinearProgress from '@mui/material/LinearProgress';
+
 
 function AuthForm({ logIn }) {
     const authError = useStore((state) => state.error)
@@ -21,17 +25,19 @@ function AuthForm({ logIn }) {
     return (
         <Box
             component="form"
-            sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                '& .MuiTextField-root': { m: 1, width: '25ch' },
-            }}
+            sx={{ width: '550px', display: 'flex', flexWrap: 'wrap' }}
             noValidate
             autoComplete="off"
         >
+            <Typography variant="h5" gutterBottom>
+                База данных генератора баннеров
+            </Typography>
+            <Divider sx={{ minWidth: '100%', marginBottom: '40px' }} />
+            
+           
             <TextField
+                sx={{ minWidth: '100%', marginBottom: '16px'}}
+               
                 error={authError}
                 required
                 name="name"
@@ -41,6 +47,8 @@ function AuthForm({ logIn }) {
                 label="Email"
             />
             <TextField
+                sx={{ minWidth: '100%', marginBottom: '16px' }}
+               
                 error={authError}
                 required
                 name="password"
@@ -51,7 +59,20 @@ function AuthForm({ logIn }) {
                 type="password"
                 autoComplete="current-password"
             />
-            <Button variant="contained" onClick={() => { logIn(authContent.name, authContent.password) }}>Войти</Button>
+            <Button sx={{
+                minWidth: '100%',
+                backgroundColor: 'black',
+                marginTop: '32px',
+                '&:hover': {
+                    backgroundColor: 'yellow',
+                    color: 'black',
+                }
+            }}
+                variant="contained"
+                onClick={() => { logIn(authContent.name, authContent.password) }}>
+                Войти
+            </Button>
+            <LinearProgress sx={{ minWidth: '100%', marginTop: '8px' }}/>
         </Box>);
 }
 

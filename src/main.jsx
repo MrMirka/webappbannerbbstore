@@ -5,6 +5,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css'
 import Root from './components/conteiners/Root.jsx';
 import { initializeApp } from 'firebase/app';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyCsKfZrEwwV9Hc4kPr6aNsV5KAeY6ImpU4",
